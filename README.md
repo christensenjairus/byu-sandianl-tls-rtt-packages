@@ -18,9 +18,10 @@ This solution currently only logs the TLS RTT in the webserver access logs, leav
 
 ### Nginx and Apache
 1. Clone this repository
-2. Move into the Nginx or Apache folder with `cd Nginx` or `cd Apache` depending on which you'd like to install.
-3. To install, run `sudo dpkg -i *.deb` to install all the .deb files in the folder.
-4. Set up Apache or Nginx as normal.
+2. (**APACHE ONLY**) Install a couple needed dependencies with `sudo apt install libapr1-dev libaprutil-dev`.
+3. Move into the Nginx or Apache folder with `cd Nginx` or `cd Apache` depending on which you'd like to install.
+4. To install, run `sudo dpkg -i *.deb` to install all the .deb files in the folder.
+5. Set up Apache or Nginx as normal.
 
 # Logging the SSL RTT
 ### Nginx
