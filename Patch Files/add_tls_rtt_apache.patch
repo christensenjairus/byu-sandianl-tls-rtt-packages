@@ -1,0 +1,26 @@
+Index: apache2-2.4.54/modules/ssl/ssl_engine_kernel.c
+===================================================================
+--- apache2-2.4.54.orig/modules/ssl/ssl_engine_kernel.c
++++ apache2-2.4.54/modules/ssl/ssl_engine_kernel.c
+@@ -1489,6 +1489,7 @@ static const char *const ssl_hook_Fixup_
+     "SSL_PROTOCOL",
+     "SSL_SECURE_RENEG",
+     "SSL_COMPRESS_METHOD",
++    "SSL_RTT",
+     "SSL_CIPHER",
+     "SSL_CIPHER_EXPORT",
+     "SSL_CIPHER_USEKEYSIZE",
+Index: apache2-2.4.54/modules/ssl/ssl_engine_vars.c
+===================================================================
+--- apache2-2.4.54.orig/modules/ssl/ssl_engine_vars.c
++++ apache2-2.4.54/modules/ssl/ssl_engine_vars.c
+@@ -360,6 +360,9 @@ static char *ssl_var_lookup_ssl(apr_pool
+     else if (ssl != NULL && strcEQ(var, "PROTOCOL")) {
+         result = (char *)SSL_get_version(ssl);
+     }
++    else if (ssl != NULL && strcEQ(var, "RTT")) {
++        result = apr_psprintf(p, "%ld", SSL_get_rtt((const SSL *) ssl));
++    }
+     else if (ssl != NULL && strcEQ(var, "SESSION_ID")) {
+         char buf[MODSSL_SESSION_ID_STRING_LEN];
+         SSL_SESSION *pSession = SSL_get_session(ssl);
