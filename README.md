@@ -2,7 +2,7 @@
 ### BYU &amp; Sandia National Labs Capstone Project
 Debian packages for Nginx and Apache with the custom (included) OpenSSL packages. ***These are all modified to calculate and provide the retrieval of TLS round trip time and log it in webserver access logs.***
 
-*NOTE: This is a Proof of Concept and is not recommended for use in production environments. With some luck, this functionality will be released soon built-in to OpenSSL, Nginx, and Apache. Until then, this is recommended for testing only`.
+*NOTE: This is a Proof of Concept and is not recommended for use in production environments. With some luck, this functionality will be released soon built-in to OpenSSL, Nginx, and Apache. Until then, this is recommended for testing only`.*
 
 This SSL/TLS Round Trip Time (RTT) is useful on both the client and server side to detect if a proxy is in use. Various methods like the HTTP RTT and pinging the host can show how long the TLS RTT 'should' be. If the TLS RTT varies too much from this value, there is likely a proxy in use. This can be used to set webserver access rules or firewall rules to react to a proxied connection. 
 
