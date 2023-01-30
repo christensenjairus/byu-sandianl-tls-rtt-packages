@@ -1,5 +1,6 @@
-# POC Packages for BYU-Sandia National Labs TLS-Based Proxy Detection.
-BYU &amp; Sandia National Labs Capstone Project. Debian packages for Nginx and Apache with the custom (included) OpenSSL packages. These are all modified to calculate and provide the retrieval of TLS round trip time and log it in the webserver access logs.
+# POC Packages for Webserver TLS-Based Proxy Detection.
+### BYU &amp; Sandia National Labs Capstone Project
+Debian packages for Nginx and Apache with the custom (included) OpenSSL packages. ***These are all modified to calculate and provide the retrieval of TLS round trip time and log it in webserver access logs.***
 
 *NOTE: This is a Proof of Concept and is not recommended for use in production environments. With some luck, this functionality will be released soon built-in to OpenSSL, Nginx, and Apache. Until then, this is recommended for testing only`.
 
