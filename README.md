@@ -33,7 +33,8 @@ This solution currently only logs the TLS RTT in the webserver access logs, leav
 # Logging the SSL RTT
 ### Nginx
 1. Open the `/etc/nginx/nginx.conf` file (or whereever your logging configuration file is)
-2. Add the logging variable `$ssl_rtt` to the log configuration.
+2. Add the logging variable `$ssl_rtt` to the log configuration. 
+ * You may need to add a logging configuration like this one if you haven't done so already. Remember to add the name of the logging configuration on the `access_log` line so your log configuration format is used in `access.log`.
 ![image](https://user-images.githubusercontent.com/58751387/215526431-2e12d08c-05e9-4f4c-a7f9-a48060dcd16b.png)
 3. Save the file
 4. Restart Nginx with `sudo systemctl restart nginx`
@@ -46,6 +47,7 @@ This solution currently only logs the TLS RTT in the webserver access logs, leav
 3. Save the file
 4. Restart Nginx with `sudo systemctl restart apach2`
 5. View the logs with `sudo tail -f /var/log/apache2/access.log` or wherever your log file is located.
+6. You may need to run `sudo dpkg -i *.deb` in the `OpenSSL` folder again if you're not recieving any output for the RTT. The `sudo apt --fix-broken install` command from earlier might have replaced our version of `libssl` or `openssl` and you don't want that.
 
 # Overview of Our Changes
 ### OpenSSL
