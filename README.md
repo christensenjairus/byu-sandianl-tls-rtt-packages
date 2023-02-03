@@ -1,4 +1,4 @@
-# POC Debian Packages for Webserver TLS-Based Proxy Detection.
+# POC Debian Packages for Webserver TLS-Based Proxy Detection
 ### BYU &amp; Sandia National Labs Capstone Project
 ##### Ubuntu 22.10 was used to create these packages
 Debian packages for Nginx and Apache with the custom (included) OpenSSL packages. ***These are all modified to calculate and provide the retrieval of TLS round trip time and log it in webserver access logs.***
