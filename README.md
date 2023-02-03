@@ -1,20 +1,20 @@
 # POC Debian Packages for Webserver TLS-Based Proxy Detection
 ### BYU &amp; Sandia National Labs Capstone Project
 ##### Ubuntu 22.10 was used to create these packages
-Debian packages for Nginx and Apache with the custom (included) OpenSSL packages. ***These are all modified to calculate and provide the retrieval of TLS round trip time and log it in webserver access logs.***
+Debian packages for Nginx and Apache with the custom (included) OpenSSL packages. ***These are all modified to calculate and provide the retrieval of TLS handshake round trip time and log it in webserver access logs.***
 
 *NOTE: This is a Proof of Concept and is not recommended for use in production environments. With some luck, this functionality will be released soon built-in to OpenSSL, Nginx, and Apache. Until then, this is recommended for testing only.*
 
-This SSL/TLS Round Trip Time (RTT) is useful on both the client and server side to detect if a proxy is in use. Various methods like the HTTP RTT and pinging the host can show how long the TLS RTT 'should' be. If the TLS RTT varies too much from this value, there is likely a proxy in use. This can be used to set webserver access rules or firewall rules to react to a proxied connection. 
+This SSL/TLS Handshake Round Trip Time (RTT) is useful on both the client and server side to detect if a proxy is in use. Various methods like the HTTP RTT and pinging the host can show how long the TLS Handshake RTT 'should' be. If the TLS RTT varies too much from this value, there is likely a proxy in use. This can be used to set webserver access rules or firewall rules to react to a proxied connection. 
 
-This solution currently only logs the TLS RTT in the webserver access logs, leaving the blocking/redirection actions to be done by an external program of your choice.
+This solution currently only logs the TLS Handshake RTT in the webserver access logs, leaving the blocking/redirection actions to be done by an external program of your choice.
 
 ### Webserver access.log example:
 ![image](https://user-images.githubusercontent.com/58751387/215528725-15a2655d-48e0-406a-b201-fee28c5bed7a.png)
 
 # Installation
 ### OpenSSL
-**Must install this before trying to install either Nginx or Apache, as this is a dependency, and its API has been modified to include a function called `SSL_get_handshake_rtt()` that will return the TLS RTT for a given connection.**
+**Must install this before trying to install either Nginx or Apache, as this is a dependency, and its API has been modified to include a function called `SSL_get_handshake_rtt()` that will return the TLS Handshake RTT for a given connection.**
 1. Clone this repository.
 2. Move into the OpenSSL folder with `cd OpenSSL`.
 3. To install, run `sudo dpkg -i *.deb` to install all the .deb files in the folder.
