@@ -1,5 +1,6 @@
-# POC Packages for Webserver TLS-Based Proxy Detection.
+# POC Debian Packages for Webserver TLS-Based Proxy Detection.
 ### BYU &amp; Sandia National Labs Capstone Project
+##### Ubuntu 22.10 was used to create these packages
 Debian packages for Nginx and Apache with the custom (included) OpenSSL packages. ***These are all modified to calculate and provide the retrieval of TLS round trip time and log it in webserver access logs.***
 
 *NOTE: This is a Proof of Concept and is not recommended for use in production environments. With some luck, this functionality will be released soon built-in to OpenSSL, Nginx, and Apache. Until then, this is recommended for testing only.*
@@ -57,7 +58,7 @@ Nginx and Apache use the `SSL` or `SSL_Connection` objects to log data about an 
 
 We've added a function entitled `SSL_get_rtt()` that the webservers can call to retrieve the rtt for an `SSL` object, allowing them to log the result (which is in microseconds).
 
-Our [patch file](https://github.com/christensenjairus/byu-sandianl-tls-rtt-packages/blob/master/Patch%20Files/add_tls_rtt_openssl.patch) for OpenSSL is relatively jury-rigged compared to our formal branch of OpenSSL, found [here]([https://github.com/christensenjairus/byu-sandianl-openssl](https://github.com/christensenjairus/byu-sandianl-openssl/tree/relocate_rtt)). The reason for this, is that OpenSSL has had a relatively major refactor since the latest Debian version (3.0.5 as of now), preventing us from calling some of their newer functions in this POC. Our patch file has some of these newer functions pasted in and modified. However, after we have our pull request approved, the `SSL_get_rtt()` function will be mainstream and the need for jury-rigging the Debian release may not be necessary for much longer.
+Our [patch file](https://github.com/christensenjairus/byu-sandianl-tls-rtt-packages/blob/master/Patch%20Files/add_tls_rtt_openssl.patch) for OpenSSL is relatively jury-rigged compared to our formal branch of OpenSSL, found [here](https://github.com/christensenjairus/byu-sandianl-openssl/tree/relocate_rtt). The reason for this, is that OpenSSL has had a relatively major refactor since the latest Debian version (3.0.5 as of now), preventing us from calling some of their newer functions in this POC. Our patch file has some of these newer functions pasted in and modified. However, after we have our pull request approved, the `SSL_get_rtt()` function will be mainstream and the need for jury-rigging the Debian release may not be necessary for much longer.
 
 The files changed in our formal submission to OpenSSL are `include/openssl/ssl.h.in`, `ssl/ssl_lib.c`, `ssl/ssl_local.h`, `ssl/statem/statem_srvr.c`, and `util/libssl.num`. 
 
