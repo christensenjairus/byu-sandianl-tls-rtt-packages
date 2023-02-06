@@ -39,6 +39,7 @@ sudo apt-get update && sudo apt-get upgrade -y
 4. Move into the Nginx or Apache folder with `cd Nginx` or `cd Apache` depending on which you'd like to install.
 5. To install, run `sudo dpkg -i *.deb` to install all the .deb files in the folder.
     * If this fails, try `sudo apt --fix-broken install` and then try again.
+    * (**NGINX ONLY**) You may need to install the `nginx-core` package first so the other packages know its already installed and don't complain
     * Note: We've placed `nginx-light` nor `nginx-extras` in the `extras` folder because they conflict with `nginx-core`. If you want those packages instead of `nginx-core`, just install the ones you want/need.
 6. (**APACHE ONLY**) Enable the SSL module with `sudo a2enmod ssl && sudo systemctl restart apache2`.
 7. Set up Apache or Nginx as normal.
