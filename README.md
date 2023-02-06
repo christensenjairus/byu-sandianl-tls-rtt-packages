@@ -5,7 +5,14 @@ Debian packages for Nginx and Apache with the custom (included) OpenSSL packages
 
 *NOTE: This is a Proof of Concept and is not recommended for use in production environments. With some luck, this functionality will be released soon built-in to OpenSSL, Nginx, and Apache. Until then, this is recommended for testing only.*
 
-This SSL/TLS Handshake Round Trip Time (RTT) is useful on both the client and server side to detect if a proxy is in use. Various methods like the HTTP RTT and pinging the host can show how long the TLS Handshake RTT 'should' be. If the TLS RTT varies too much from this value, there is likely a proxy in use. This can be used to set webserver access rules or firewall rules to react to a proxied connection. 
+This SSL/TLS Handshake Round Trip Time (RTT) is useful on both the client and server side to detect if a proxy is in use. 
+
+This is an important metric for...
+1) protecting assets like webservers from attackers that are using proxies
+2) protecting clients from man-in-the-middle attacks
+3) detecting popped computers in an network that are being used as proxies for attackers
+
+Various methods like the HTTP RTT and pinging the host can show how long the TLS Handshake RTT *should* be. If the TLS RTT varies too much from this value, there is likely a proxy in use. This can be used to set webserver access rules or firewall rules to react to a proxied connection.
 
 This solution currently only logs the TLS Handshake RTT in the webserver access logs, leaving the blocking/redirection actions to be done by an external program of your choice.
 
