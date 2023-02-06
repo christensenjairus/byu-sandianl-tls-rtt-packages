@@ -67,18 +67,18 @@ sudo apt-get update && sudo apt-get upgrade -y
 
 # Overview of Our Changes
 ### OpenSSL
-We've modified the state machine of a TLS handshake to create two `OSSL_TIME`s variables at points in the handshake when a round trip should have taken place. This records two timestamps in the form of `ticks`. The difference in these timestamps (titled `rtt`) represents the round trip time for the TLS connection and is stored in the `SSL_Connection` object.
+We've modified the state machine of a TLS handshake to create two `OSSL_TIME`s variables at points in the handshake when a round trip should have taken place. This records two timestamps in the form of `ticks`. The difference in these timestamps (titled `handshake_rtt`) represents the round trip time for the TLS connection and is stored in the `SSL_Connection` object.
 
 Nginx and Apache use the `SSL` or `SSL_Connection` objects to log data about an SSL connection. The webservers (which call OpenSSL's functions directly), pass in the `SSL` object to OpenSSL functions like `SSL_get_protocol()` and `SSL_get_ciphers()` then log the result. 
 
-We've added a function entitled `SSL_get_handshake_rtt()` that the webservers can call to retrieve the rtt for an `SSL` object, allowing them to log the result (which is in microseconds).
+We've added a function entitled `SSL_get_handshake_rtt()` that the webservers can call to retrieve the handshake rtt for an `SSL` object, allowing them to log the result (which is in microseconds).
 
-Our [patch file](https://github.com/christensenjairus/byu-sandianl-tls-rtt-packages/blob/master/Patch%20Files/add_tls_rtt_openssl.patch) for OpenSSL is inferior to our formal branch of OpenSSL, found [here](https://github.com/christensenjairus/byu-sandianl-openssl/tree/relocate_rtt). The reason for this is that OpenSSL has had a relatively major refactor since the latest Debian version (3.0.5 as of now), preventing us from calling some of their newer functions in this POC. Our patch file has some of these newer functions pasted in and modified. However, after we have our pull request approved, the `SSL_get_handshake_rtt()` function will be mainstream and the need for our patch file in the Debian release may not be necessary for much longer.
+Our [patch file](https://github.com/christensenjairus/byu-sandianl-tls-rtt-packages/blob/master/Patch%20Files/add_tls_rtt_openssl.patch) for OpenSSL is inferior to our formal branch of OpenSSL, found [here](https://github.com/christensenjairus/byu-sandianl-openssl/tree/relocate_rtt). The reason for this is that OpenSSL has had a relatively major refactor since the latest Debian version (3.0.5 as of now), preventing us from calling some of their newer functions in this POC. Our patch file has some of these newer functions pasted in and modified. However, after we have our pull request approved, the `SSL_get_handshake_rtt()` function will be mainstream and the need for our patch file may not be necessary for much longer.
 
-The files changed in our formal submission to OpenSSL are `include/openssl/ssl.h.in`, `ssl/ssl_lib.c`, `ssl/ssl_local.h`,`ssl/statem/statem_srvr.c`, `ssl/statem/statem_srvr.c`, and `util/libssl.num`. 
+The files changed in our formal submission to OpenSSL are `include/openssl/ssl.h.in`, `ssl/ssl_lib.c`, `ssl/ssl_local.h`,`ssl/statem/statem_srvr.c`, `ssl/statem/statem_clnt.c`, and `util/libssl.num`. 
 
 ### Nginx
-We've added the necessary changes in `src/event/ngx_event_openssl.h`, `src/event/ngx_event_openssl.c`, and `src/http/modules/ngx_http_ssl_module.c` to print the TLS round trip time in microseconds using OpenSSL's new `SSL_get_handshake_rtt()` function. This will print out the RTT when the string `$ssl_rtt` is placed in the Nginx logging configuration. These changes can be seen in our [patch file](https://github.com/christensenjairus/byu-sandianl-tls-rtt-packages/blob/master/Patch%20Files/add_tls_rtt_nginx.patch) and in our cloned [repository for Nginx](https://github.com/christensenjairus/byu-sandianl-nginx/tree/add_rtt_timing).
+We've added the necessary changes in `src/event/ngx_event_openssl.h`, `src/event/ngx_event_openssl.c`, and `src/http/modules/ngx_http_ssl_module.c` to print the TLS handshake round trip time in microseconds using OpenSSL's new `SSL_get_handshake_rtt()` function. This will print out the handshake RTT when the string `$ssl_rtt` is placed in the Nginx logging configuration. These changes can be seen in our [patch file](https://github.com/christensenjairus/byu-sandianl-tls-rtt-packages/blob/master/Patch%20Files/add_tls_rtt_nginx.patch) and in our cloned [repository for Nginx](https://github.com/christensenjairus/byu-sandianl-nginx/tree/relocate_rtt).
 
 ### Apache2
 We've added the necessary changes to `/modules/ssl/ssl_engine_kernel.c` and `/modules/ssl/ssl_engine_vars.c` to print the TLS round trip time in microsecondss using OpenSSL's new `SSL_get_handshake_rtt()` function. This will print out the RTT when the string `%{SSL_RTT}x` is placed in the Apache logging configuration. These changes can be seen in our [patch file](https://github.com/christensenjairus/byu-sandianl-tls-rtt-packages/blob/master/Patch%20Files/add_tls_rtt_apache.patch). We still need to place these changes in a seperate repository for Apache to review, but hopefully (given the simplicity of this change) Apache developers may just do this work for us once the OpenSSL pull request is accepted.
@@ -86,3 +86,5 @@ We've added the necessary changes to `/modules/ssl/ssl_engine_kernel.c` and `/mo
 ## To Do:
 - [X] Client-side TLS RTT calculation for TLS 1.2 connections
 - [ ] Client-side TLS RTT calculation for TLS 1.3 connections
+- [X] Refactor NGINX, Apache, and OpenSSL to use `uint64_t` return data type for `SSL_get_handshake_rtt()`
+- [X] Rename functions/variables/comments to be `handshake_rtt` instead of just `rtt` to be more clear on what this value really is
