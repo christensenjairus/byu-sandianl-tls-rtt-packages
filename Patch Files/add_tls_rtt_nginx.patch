@@ -7,14 +7,14 @@ Index: nginx-1.22.0/src/event/ngx_event_openssl.c
  }
  
 +ngx_int_t
-+ngx_ssl_get_rtt(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
++ngx_ssl_get_handshake_rtt(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
 +{
-+    long rtt = SSL_get_rtt(c->ssl->connection);
++    uint64_t rtt = SSL_get_handshake_rtt(c->ssl->connection);
 +    if (rtt < 1)
 +        return NGX_ERROR;
 +
-+    u_char buf[100];
-+    sprintf((char *)buf, "%ld", rtt);
++    u_char buf[64];
++    sprintf((char *)buf, "%" PRId64, rtt);
 +    size_t len = ngx_strlen(buf);
 +
 +    s->len = len;
@@ -37,7 +37,7 @@ Index: nginx-1.22.0/src/event/ngx_event_openssl.h
  
  ngx_int_t ngx_ssl_get_protocol(ngx_connection_t *c, ngx_pool_t *pool,
      ngx_str_t *s);
-+ngx_int_t ngx_ssl_get_rtt(ngx_connection_t *c, ngx_pool_t *pool,
++ngx_int_t ngx_ssl_get_handshake_rtt(ngx_connection_t *c, ngx_pool_t *pool,
 +    ngx_str_t *s);
  ngx_int_t ngx_ssl_get_cipher_name(ngx_connection_t *c, ngx_pool_t *pool,
      ngx_str_t *s);
@@ -51,7 +51,7 @@ Index: nginx-1.22.0/src/http/modules/ngx_http_ssl_module.c
        (uintptr_t) ngx_ssl_get_server_name, NGX_HTTP_VAR_CHANGEABLE, 0 },
  
 +    { ngx_string("ssl_rtt"), NULL, ngx_http_ssl_variable,
-+      (uintptr_t) ngx_ssl_get_rtt, NGX_HTTP_VAR_CHANGEABLE, 0 },
++      (uintptr_t) ngx_ssl_get_handshake_rtt, NGX_HTTP_VAR_CHANGEABLE, 0 },
 +
      { ngx_string("ssl_alpn_protocol"), NULL, ngx_http_ssl_variable,
        (uintptr_t) ngx_ssl_get_alpn_protocol, NGX_HTTP_VAR_CHANGEABLE, 0 },

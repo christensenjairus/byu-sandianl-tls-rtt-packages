@@ -19,7 +19,7 @@ Index: apache2-2.4.54/modules/ssl/ssl_engine_vars.c
          result = (char *)SSL_get_version(ssl);
      }
 +    else if (ssl != NULL && strcEQ(var, "RTT")) {
-+        result = apr_psprintf(p, "%ld", SSL_get_rtt((const SSL *) ssl));
++        result = apr_psprintf(p, "%" PRId64, SSL_get_handshake_rtt((const SSL *) ssl));
 +    }
      else if (ssl != NULL && strcEQ(var, "SESSION_ID")) {
          char buf[MODSSL_SESSION_ID_STRING_LEN];

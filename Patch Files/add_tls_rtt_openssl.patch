@@ -6,7 +6,7 @@ Index: openssl-3.0.5/include/openssl/ssl.h.in
  
  __owur int SSL_get_error(const SSL *s, int ret_code);
  __owur const char *SSL_get_version(const SSL *s);
-+__owur long SSL_get_rtt(const SSL *s);
++__owur uint64_t SSL_get_handshake_rtt(const SSL *s);
  
  /* This sets the 'default' SSL version that SSL_new() will create */
  # ifndef OPENSSL_NO_DEPRECATED_3_0
@@ -19,12 +19,12 @@ Index: openssl-3.0.5/ssl/ssl_lib.c
  }
  
 +/*
-+ * SSL_get_rtt retrieves the RTT value for a connection in microseconds
++ * SSL_get_rtt retrieves the handshake RTT value for a connection in microseconds
 + * These units NGINX's $tcpinfo_rtt variable (available through SSL module)
 +*/
-+__owur long SSL_get_rtt(const SSL *s)
++__owur uint64_t SSL_get_handshake_rtt(const SSL *s)
 +{
-+    return (long)(s->rtt / 1000);
++    return (s->handshake_rtt / 1000);
 +}
 +
  static int dup_ca_names(STACK_OF(X509_NAME) **dst, STACK_OF(X509_NAME) *src)
@@ -42,7 +42,7 @@ Index: openssl-3.0.5/ssl/ssl_local.h
 -     * is so data can be read and written to different handlers
 -     */
 +     * When the write_finished stage of the handshake has ended.
-+     * Used to calculate the connection rtt.
++     * Used to calculate the connection's handshake rtt.
 +    */
 +    uint64_t write_finished;
 +    /*
@@ -50,18 +50,17 @@ Index: openssl-3.0.5/ssl/ssl_local.h
 +     * Generated in ./statem/statem_srvr.c by taking difference in
 +     * nanoseconds between the WriteFinished and ReadFinished stages of handshake.
 +    */
-+    uint64_t rtt;
++    uint64_t handshake_rtt;
      /* used by SSL_read */
      BIO *rbio;
      /* used by SSL_write */
-Index: openssl-3.0.5/ssl/statem/statem_srvr.c
-===================================================================
---- openssl-3.0.5.orig/ssl/statem/statem_srvr.c
-+++ openssl-3.0.5/ssl/statem/statem_srvr.c
-@@ -27,6 +27,56 @@
- #include <openssl/core_names.h>
- #include <openssl/asn1t.h>
+@@ -2882,3 +2889,55 @@ static ossl_unused ossl_inline void ssl_
+ }
  
+ #endif
++
++/* Functions added for RTT retrieval (similar functions are in newer versions of OpenSSL) */
++static ossl_unused ossl_inline
 +uint64_t time_now(void)
 +{
 +    uint64_t r;
@@ -111,11 +110,11 @@ Index: openssl-3.0.5/ssl/statem/statem_srvr.c
 +    return a > b ? time_subtract(a, b)
 +                     : time_subtract(b, a);
 +}
-+
- #define TICKET_NONCE_SIZE       8
- 
- typedef struct {
-@@ -490,6 +540,7 @@ static WRITE_TRAN ossl_statem_server13_w
+Index: openssl-3.0.5/ssl/statem/statem_srvr.c
+===================================================================
+--- openssl-3.0.5.orig/ssl/statem/statem_srvr.c
++++ openssl-3.0.5/ssl/statem/statem_srvr.c
+@@ -490,6 +490,7 @@ static WRITE_TRAN ossl_statem_server13_w
  
      case TLS_ST_SW_FINISHED:
          st->hand_state = TLS_ST_EARLY_DATA;
@@ -123,26 +122,17 @@ Index: openssl-3.0.5/ssl/statem/statem_srvr.c
          return WRITE_TRAN_CONTINUE;
  
      case TLS_ST_EARLY_DATA:
-@@ -515,6 +566,18 @@ static WRITE_TRAN ossl_statem_server13_w
+@@ -515,6 +516,9 @@ static WRITE_TRAN ossl_statem_server13_w
              st->hand_state = TLS_ST_SW_SESSION_TICKET;
          else
              st->hand_state = TLS_ST_OK;
 +
-+        s->rtt = time_abs_difference(time_now(), s->write_finished);
-+        printf("READ FINISHED! %ld microseconds\n", (long)(s->rtt / 1000));
-+        FILE *rttlogfile = fopen("/tmp/openssl_rtt.log", "a");
-+        if (rttlogfile == NULL)
-+            perror("Can't open rtt log file");
-+        else
-+        {
-+            fprintf(rttlogfile, "RTT TIME: %ld microseconds\n", (long)(s->rtt / 1000));
-+            fclose(rttlogfile);
-+        }
++        s->handshake_rtt = time_abs_difference(time_now(), s->write_finished);
 +
          return WRITE_TRAN_CONTINUE;
  
      case TLS_ST_SR_KEY_UPDATE:
-@@ -645,6 +708,7 @@ WRITE_TRAN ossl_statem_server_write_tran
+@@ -645,6 +649,7 @@ WRITE_TRAN ossl_statem_server_write_tran
          return WRITE_TRAN_CONTINUE;
  
      case TLS_ST_SW_SRVR_DONE:
@@ -150,26 +140,17 @@ Index: openssl-3.0.5/ssl/statem/statem_srvr.c
          return WRITE_TRAN_FINISHED;
  
      case TLS_ST_SR_FINISHED:
-@@ -656,6 +720,18 @@ WRITE_TRAN ossl_statem_server_write_tran
+@@ -656,6 +661,9 @@ WRITE_TRAN ossl_statem_server_write_tran
          } else {
              st->hand_state = TLS_ST_SW_CHANGE;
          }
 +
-+        s->rtt = time_abs_difference(time_now(), s->write_finished);
-+        printf("READ FINISHED! %ld microseconds\n", (long)(s->rtt / 1000));
-+        FILE *rttlogfile = fopen("/tmp/openssl_rtt.log", "a");
-+        if (rttlogfile == NULL)
-+            perror("Can't open rtt log file");
-+        else
-+        {
-+            fprintf(rttlogfile, "RTT TIME: %ld microseconds\n", (long)(s->rtt / 1000));
-+            fclose(rttlogfile);
-+        }
++        s->handshake_rtt = time_abs_difference(time_now(), s->write_finished);
 +
          return WRITE_TRAN_CONTINUE;
  
      case TLS_ST_SW_SESSION_TICKET:
-@@ -4107,4 +4183,4 @@ MSG_PROCESS_RETURN tls_process_end_of_ea
+@@ -4107,4 +4115,4 @@ MSG_PROCESS_RETURN tls_process_end_of_ea
      }
  
      return MSG_PROCESS_CONTINUE_READING;
@@ -184,5 +165,25 @@ Index: openssl-3.0.5/util/libssl.num
  SSL_set0_tmp_dh_pkey                    521	3_0_0	EXIST::FUNCTION:
  SSL_CTX_set0_tmp_dh_pkey                522	3_0_0	EXIST::FUNCTION:
  SSL_group_to_name                       523	3_0_0	EXIST::FUNCTION:
-+SSL_get_rtt                             524 3_0_0   EXIST::FUNCTION:
++SSL_get_handshake_rtt                   524 3_0_0   EXIST::FUNCTION:
 \ No newline at end of file
+Index: openssl-3.0.5/ssl/statem/statem_clnt.c
+===================================================================
+--- openssl-3.0.5.orig/ssl/statem/statem_clnt.c
++++ openssl-3.0.5/ssl/statem/statem_clnt.c
+@@ -568,6 +568,7 @@ WRITE_TRAN ossl_statem_client_write_tran
+             st->hand_state = TLS_ST_CW_CERT;
+         else
+             st->hand_state = TLS_ST_CW_KEY_EXCH;
++        s->write_finished = time_now();
+         return WRITE_TRAN_CONTINUE;
+ 
+     case TLS_ST_CW_CERT:
+@@ -631,6 +632,7 @@ WRITE_TRAN ossl_statem_client_write_tran
+         }
+ 
+     case TLS_ST_CR_FINISHED:
++        s->handshake_rtt = time_abs_difference(time_now(), s->write_finished);
+         if (s->hit) {
+             st->hand_state = TLS_ST_CW_CHANGE;
+             return WRITE_TRAN_CONTINUE;
