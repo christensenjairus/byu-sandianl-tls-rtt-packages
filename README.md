@@ -79,3 +79,7 @@ We've added the necessary changes in `src/event/ngx_event_openssl.h`, `src/event
 
 ### Apache2
 We've added the necessary changes to `/modules/ssl/ssl_engine_kernel.c` and `/modules/ssl/ssl_engine_vars.c` to print the TLS round trip time in microsecondss using OpenSSL's new `SSL_get_handshake_rtt()` function. This will print out the RTT when the string `%{SSL_RTT}x` is placed in the Apache logging configuration. These changes can be seen in our [patch file](https://github.com/christensenjairus/byu-sandianl-tls-rtt-packages/blob/master/Patch%20Files/add_tls_rtt_apache.patch). We still need to place these changes in a seperate repository for Apache to review, but hopefully (given the simplicity of this change) Apache developers may just do this work for us once the OpenSSL pull request is accepted.
+
+## To Do:
+- [X] Client-side TLS RTT calculation for TLS 1.2 connections
+- [ ] Client-side TLS RTT calculation for TLS 1.3 connections
