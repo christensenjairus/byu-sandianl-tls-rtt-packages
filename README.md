@@ -19,6 +19,42 @@ This solution currently only logs the TLS Handshake RTT in the webserver access 
 ### Webserver access.log example:
 ![image](https://user-images.githubusercontent.com/58751387/215528725-15a2655d-48e0-406a-b201-fee28c5bed7a.png)
 
+# Methodology to Detect a Proxy
+### No proxy:
+Let's say we have a webserver that is accepting network connections. For a non-proxied connection, the TCP RTT, TLS/SSL RTT, and the ping time will be very similar. The screenshot below illustrates this example. The webserver sees that the connection's TCP RTT, TLS RTT, and ping time (44ms) are within a couple milliseconds (or few thousand microseconds) of each other. 
+
+In non-proxied connections, ***there is not a large discrepency between the TCP, TLS and ping RTTs.***
+
+TCP vs TLS RTT with no Proxy:
+
+![image](https://user-images.githubusercontent.com/58751387/217104156-f67f34fd-812f-4acf-a364-a5277f9be749.png)
+
+### TCP Proxy
+However, if we introduce a **TCP-based** proxy (located only a few hundred miles away), the TCP RTT value will now **not** match the TLS RTT value and both will be more than the ping time of 23ms. This is because the TCP connection is terminated at the proxy, but the TLS connection is end-to-end, back to the client. Also, TCP proxies are very slow in comparison to other types. For this reason, both TCP and TLS RTTs will be much higher than the ping time. ***The discrepency between the TCP and TLS RTT gives away that this is a proxy.***
+
+TCP vs TLS RTT with TCP-based Proxy:
+
+![image](https://user-images.githubusercontent.com/58751387/217106797-93cfb655-5503-461f-9a3b-f2060145b8d3.png)
+
+### UDP Proxy
+When using a **UDP-based proxy** located in the same geographical area as the TCP-based proxy, the TCP RTT value will now match the TLS RTT and both will continue to be more than the ping time of 23ms. In this case, TCP and TLS are end-to-end. ***The discrepency between those RTT values and the ping time gives away that this is a proxy.***
+
+TCP vs TLS RTT with UDP Proxy:
+
+![image](https://user-images.githubusercontent.com/58751387/217106201-a0798dd1-567c-46f7-a17d-8c17d0c76cbc.png)
+
+### Tor
+Tor is the easiest of all these proxies to detect because the ping time (28ms) and the TCP RTT are much, much less than from the TLS RTT. ***The discrepency between the TCP & Ping RTT and the TLS RTT gives away that this is a proxy.***
+
+TCP vs TLS RTT with Tor:
+
+![image](https://user-images.githubusercontent.com/58751387/217109527-632fbab3-2956-4dd1-ad83-2dd8432e85ae.png)
+
+### Other proxies
+We will be experminenting with other proxy types to see if we can fool this methodology. 
+
+We're aware of at least one scenario in which TLS timing analysis can be fooled: if a proxy were to terminate the TLS and TCP connections. Most attackers would not want to terminate the TLS connection because their actions would be visible on the proxy. An attacker would have to trust this proxy completely. If this were the case, and IP reputation doesn't help detect a proxy, an attacker could avoid being detected as using a proxy.
+
 # Installation
 ### Update
 Updating might go without saying, however, *these are the latest packages Debian stable has to offer* (as of the beginning of Feb 2023), and some of them *may be dependant on newer versions of other programs* like `perl`.
