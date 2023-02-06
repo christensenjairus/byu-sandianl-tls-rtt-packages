@@ -20,7 +20,7 @@ This solution currently only logs the TLS Handshake RTT in the webserver access 
 ![image](https://user-images.githubusercontent.com/58751387/215528725-15a2655d-48e0-406a-b201-fee28c5bed7a.png)
 
 # Methodology to Detect a Proxy
-### No proxy:
+### No Proxy
 Let's say we have a webserver that is accepting network connections. For a non-proxied connection, the TCP RTT, TLS/SSL RTT, and the ping time will be very similar. The screenshot below illustrates this example. The webserver sees that the connection's TCP RTT, TLS RTT, and ping time (44ms) are within a couple milliseconds (or few thousand microseconds) of each other. 
 
 In non-proxied connections, ***there is not a large discrepency between the TCP, TLS and ping RTTs.***
