@@ -50,6 +50,7 @@ sudo apt-get update && sudo apt-get upgrade -y
     * You may need to add a logging configuration like this one if you haven't done so already. Remember to add the name of the logging configuration on the `access_log` line so your log configuration format is used in `access.log`.
 
 ![image](https://user-images.githubusercontent.com/58751387/215526431-2e12d08c-05e9-4f4c-a7f9-a48060dcd16b.png)
+
 3. Save the file
 4. Restart Nginx with `sudo systemctl restart nginx`
 5. View the logs with `sudo tail -f /var/log/nginx/access.log` or wherever your log file is located.
