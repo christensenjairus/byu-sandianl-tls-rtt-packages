@@ -35,19 +35,20 @@ sudo apt-get update && sudo apt-get upgrade -y
 ### Nginx and Apache
 1. Clone this repository
 2. Install a couple needed dependencies with `sudo apt install libpcre2-dev debhelper`
-2. (**APACHE ONLY**) Install a couple needed dependencies with `sudo apt install libapr1-dev libaprutil-dev`.
-3. Move into the Nginx or Apache folder with `cd Nginx` or `cd Apache` depending on which you'd like to install.
-4. To install, run `sudo dpkg -i *.deb` to install all the .deb files in the folder.
-  * If this fails, try `sudo apt --fix-broken install` and then try again.
-  * Note: We've placed `nginx-light` nor `nginx-extras` in the `extras` folder because they conflict with `nginx-core`. If you want those packages instead of `nginx-core`, just install the ones you want/need.
-5. (**APACHE ONLY**) Enable the SSL module with `sudo a2enmod ssl && sudo systemctl restart apache2`.
-6. Set up Apache or Nginx as normal.
+3. (**APACHE ONLY**) Install a couple needed dependencies with `sudo apt install libapr1-dev libaprutil-dev`.
+4. Move into the Nginx or Apache folder with `cd Nginx` or `cd Apache` depending on which you'd like to install.
+5. To install, run `sudo dpkg -i *.deb` to install all the .deb files in the folder.
+    * If this fails, try `sudo apt --fix-broken install` and then try again.
+    * Note: We've placed `nginx-light` nor `nginx-extras` in the `extras` folder because they conflict with `nginx-core`. If you want those packages instead of `nginx-core`, just install the ones you want/need.
+6. (**APACHE ONLY**) Enable the SSL module with `sudo a2enmod ssl && sudo systemctl restart apache2`.
+7. Set up Apache or Nginx as normal.
 
 # Logging the SSL RTT
 ### Nginx
 1. Open the `/etc/nginx/nginx.conf` file (or whereever your logging configuration file is)
 2. Add the logging variable `$ssl_rtt` to the log configuration. 
- * You may need to add a logging configuration like this one if you haven't done so already. Remember to add the name of the logging configuration on the `access_log` line so your log configuration format is used in `access.log`.
+    * You may need to add a logging configuration like this one if you haven't done so already. Remember to add the name of the logging configuration on the `access_log` line so your log configuration format is used in `access.log`.
+
 ![image](https://user-images.githubusercontent.com/58751387/215526431-2e12d08c-05e9-4f4c-a7f9-a48060dcd16b.png)
 3. Save the file
 4. Restart Nginx with `sudo systemctl restart nginx`
