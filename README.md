@@ -7,7 +7,7 @@ Debian packages for Nginx and Apache with the custom (included) OpenSSL packages
 
 This SSL/TLS Handshake Round Trip Time (RTT) is useful on both the client and server side to detect if a proxy is in use. 
 
-This is an important metric for...
+This is an important metric for
 1) protecting assets like webservers from attackers that are using proxies
 2) protecting clients from man-in-the-middle attacks
 3) detecting popped computers in an network that are being used as proxies for attackers
