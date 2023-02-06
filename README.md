@@ -20,6 +20,11 @@ This solution currently only logs the TLS Handshake RTT in the webserver access 
 ![image](https://user-images.githubusercontent.com/58751387/215528725-15a2655d-48e0-406a-b201-fee28c5bed7a.png)
 
 # Installation
+### Update
+Updating might go without saying, however, these are the latest packages Debian stable has to offer (as of the beginning of Feb 2023), and they may be dependant on newer versions of other programs like `perl`.
+```bash
+sudo apt-get update && sudo apt-get upgrade -y
+```
 ### OpenSSL
 **Must install this before trying to install either Nginx or Apache, as this is a dependency, and its API has been modified to include a function called `SSL_get_handshake_rtt()` that will return the TLS Handshake RTT for a given connection.**
 1. Clone this repository.
