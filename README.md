@@ -53,7 +53,7 @@ TCP vs TLS RTT with Tor:
 ### Other proxies
 We will be experminenting with other proxy types to see if we can fool this methodology. 
 
-We're aware of at least one scenario in which TLS timing analysis can be fooled: if a proxy were to terminate the TLS and TCP connections instead of forwarding the existing connection on to the client. If this is done, there will be separate TLS and TCP connections between the client & proxy and the proxy & server. Most attackers would not want to terminate the TLS connection because their actions would be visible on the proxy (the data would have to be plain text at some point while it goes from one TLS connection to another). An attacker would have to trust this proxy completely in order to feel comfortable with this. If this were the case, and IP reputation doesn't help detect a proxy, an attacker's proxy could avoid being detected.
+We're aware of at least one scenario in which TLS timing analysis can be fooled: if a proxy were to terminate the TLS and TCP connections instead of forwarding the existing connection on to the client. If this is done, there will be separate TLS and TCP connections between the client & proxy and the proxy & server. Most attackers would not want to terminate the TLS connection because their actions would be visible on the proxy (the data would have to be plain text at some point while it goes from one TLS connection to another). An attacker would have to trust this proxy completely in order to feel comfortable with this. If this is the case, and IP reputation doesn't help detect a proxy, an attacker's proxy could avoid being detected.
 
 # Installation
 ### Update
