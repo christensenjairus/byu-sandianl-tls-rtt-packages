@@ -21,7 +21,7 @@ This solution currently only logs the TLS Handshake RTT in the webserver access 
 
 # Methodology to Detect a Proxy
 ### No Proxy
-Let's say we have a webserver that is accepting network connections. For a non-proxied connection, the TCP RTT, TLS/SSL RTT, and the ping time will be very similar. The screenshot below illustrates this example. The webserver sees that the connection's TCP RTT, TLS RTT, and ping time (44ms) are within a couple milliseconds (or few thousand microseconds) of each other. 
+Let's say we have a webserver that is accepting network connections. For a non-proxied connection, the TCP RTT, TLS/SSL RTT, and the ping time will be very similar. The screenshot below illustrates this example. The webserver sees that the connection's TCP RTT, TLS RTT, and ping time (**44ms**) are within a couple milliseconds (or few thousand microseconds) of each other. 
 
 In non-proxied connections, ***there is not a large discrepency between the TCP, TLS and ping RTTs.***
 
@@ -30,21 +30,21 @@ TCP vs TLS RTT with no Proxy:
 ![image](https://user-images.githubusercontent.com/58751387/217104156-f67f34fd-812f-4acf-a364-a5277f9be749.png)
 
 ### TCP Proxy
-However, if we introduce a **TCP-based** proxy (located only a few hundred miles away), the TCP RTT value will now **not** match the TLS RTT value and both will be more than the ping time of 23ms. This is because the TCP connection is terminated at the proxy, but the TLS connection is end-to-end, back to the client. Also, TCP proxies are very slow in comparison to other types. For this reason, both TCP and TLS RTTs will be much higher than the ping time. ***The discrepency between the TCP and TLS RTT gives away that this is a proxy.***
+However, if we introduce a **TCP-based** proxy (located only a few hundred miles away), the TCP RTT value will now be different the TLS RTT value and both of thsee will be more than the ping time of **23ms**. This is because the TCP connection is terminated at the proxy, but the TLS connection is end-to-end, back to the client. Also, TCP proxies are very slow in comparison to other types. For this reason, both TCP and TLS RTTs will be much higher than the ping time. ***The discrepency between the TCP and TLS RTT gives away that this is a proxy.***
 
 TCP vs TLS RTT with TCP-based Proxy:
 
 ![image](https://user-images.githubusercontent.com/58751387/217106797-93cfb655-5503-461f-9a3b-f2060145b8d3.png)
 
 ### UDP Proxy
-When using a **UDP-based proxy** located in the same geographical area as the TCP-based proxy, the TCP RTT value will now match the TLS RTT and both will continue to be more than the ping time of 23ms. In this case, TCP and TLS are end-to-end. ***The discrepency between those RTT values and the ping time gives away that this is a proxy.***
+When using a **UDP-based proxy** located in the same geographical area as the TCP-based proxy, the TCP RTT value will now match the TLS RTT and both will continue to be more than the ping time of **23ms**. In this case, TCP and TLS are end-to-end. ***The discrepency between those RTT values and the ping time gives away that this is a proxy.***
 
 TCP vs TLS RTT with UDP Proxy:
 
 ![image](https://user-images.githubusercontent.com/58751387/217106201-a0798dd1-567c-46f7-a17d-8c17d0c76cbc.png)
 
 ### Tor
-Tor is the easiest of all these proxies to detect because the ping time (28ms) and the TCP RTT are much, much less than from the TLS RTT. ***The discrepency between the TCP & Ping RTT and the TLS RTT gives away that this is a proxy.***
+Tor is the easiest of all these proxies to detect because the ping time (**28ms**) and the TCP RTT are much, much less than from the TLS RTT. ***The discrepency between the TCP & Ping RTT and the TLS RTT gives away that this is a proxy.***
 
 TCP vs TLS RTT with Tor:
 
@@ -53,7 +53,7 @@ TCP vs TLS RTT with Tor:
 ### Other proxies
 We will be experminenting with other proxy types to see if we can fool this methodology. 
 
-We're aware of at least one scenario in which TLS timing analysis can be fooled: if a proxy were to terminate the TLS and TCP connections. Most attackers would not want to terminate the TLS connection because their actions would be visible on the proxy. An attacker would have to trust this proxy completely. If this were the case, and IP reputation doesn't help detect a proxy, an attacker could avoid being detected as using a proxy.
+We're aware of at least one scenario in which TLS timing analysis can be fooled: if a proxy were to terminate the TLS and TCP connections instead of forwarding the existing connection on to the client. If this is done, there will be separate TLS and TCP connections between the client & proxy and the proxy & server. Most attackers would not want to terminate the TLS connection because their actions would be visible on the proxy (the data would have to be plain text at some point while it goes from one TLS connection to another). An attacker would have to trust this proxy completely in order to feel comfortable with this. If this were the case, and IP reputation doesn't help detect a proxy, an attacker's proxy could avoid being detected.
 
 # Installation
 ### Update
@@ -62,7 +62,7 @@ Updating might go without saying, however, *these are the latest packages Debian
 sudo apt-get update && sudo apt-get upgrade -y
 ```
 ### OpenSSL
-**Must install this before trying to install either Nginx or Apache, as this is a dependency, and its API has been modified to include a function called `SSL_get_handshake_rtt()` that will return the TLS Handshake RTT for a given connection.**
+**You must install this before installing either Nginx or Apache as this is a dependency and its API has been modified to include a function called `SSL_get_handshake_rtt()` that will return the TLS Handshake RTT for a given connection.**
 1. Clone this repository.
 2. Move into the OpenSSL folder with `cd OpenSSL`.
 3. To install, run `sudo dpkg -i *.deb` to install all the .deb files in the folder.
@@ -105,7 +105,7 @@ sudo apt-get update && sudo apt-get upgrade -y
 ### OpenSSL
 We've modified the state machine of a TLS handshake to create two `OSSL_TIME`s variables at points in the handshake when a round trip should have taken place. This records two timestamps in the form of `ticks`. The difference in these timestamps (titled `handshake_rtt`) represents the round trip time for the TLS connection and is stored in the `SSL_Connection` object.
 
-Nginx and Apache use the `SSL` or `SSL_Connection` objects to log data about an SSL connection. The webservers (which call OpenSSL's functions directly), pass in the `SSL` object to OpenSSL functions like `SSL_get_protocol()` and `SSL_get_ciphers()` then log the result. 
+Nginx and Apache use the `SSL` or `SSL_Connection` objects to retrieve data about an SSL connection. The webservers (which call OpenSSL's functions directly), pass in the `SSL` object to OpenSSL functions like `SSL_get_protocol()` and `SSL_get_ciphers()` then log the result. 
 
 We've added a function entitled `SSL_get_handshake_rtt()` that the webservers can call to retrieve the handshake rtt for an `SSL` object, allowing them to log the result (which is in microseconds).
 
