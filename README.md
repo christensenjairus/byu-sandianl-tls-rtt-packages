@@ -107,11 +107,11 @@ We've created a simple configuration to expose Nginx's logging variables by inje
 
 The webpage will appear green when a proxy is not detected:
 
-![Non-proxied connection](https://user-images.githubusercontent.com/58751387/232548322-8cdbd72b-c62b-4f02-83d5-2b54912cadf7.png)
+![Non-Proxied Connection](https://user-images.githubusercontent.com/58751387/232553496-dbcf395e-de46-4a0b-be3b-b9945378a53c.png)
 
 Or red when a proxy is detected:
 
-![Proxied-connection](https://user-images.githubusercontent.com/58751387/232549043-c56afbec-b1ac-41ba-9ce7-0ed709668493.png)
+![Proxied Connection](https://user-images.githubusercontent.com/58751387/232553602-6f103a21-e856-4a94-870b-bd87c6cbb9c6.png)
 
 **Note:** The algorithm used in this POC website needs to be tuned. Currently, the website is using simple logic that is functionaly equivalent to the code below:
 ```c
