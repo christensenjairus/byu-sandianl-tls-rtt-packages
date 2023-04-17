@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RTT Statistics</title>
+  </head>
+  <body onload="myFunction()">
+    <h1>RTT Statistics</h1>
+    <br><br>
+    <h2>Reported IP address: <span id="ip_address"></span><h2>
+    <h2>TLS RTT: <span id="ssl_rtt"></span> microseconds</h2>
+    <h2>TCP RTT: <span id="tcp_rtt"></span> microseconds</h2>
+    <h2>TLS - TCP difference: <span id="percent"></span> microseconds</h1>
+    <h3>Current threshold is 20000 microseconds<h3>
+    <br><br>
+    <h2>Instructions</h2>
+    <h3>The best scenario is using a Private Firefox window on a PC.</h3>
+    <h3>If using Firefox, a hard refresh (CTRL+SHIFT+R) will force both values to refresh. (CMD+SHIFT+R on Macs)</h3>
+    <h3>Other browsers will not refresh the TCP connection and may aggregate the TCP connection times.</h3>
+    <h3>If you wait about a minute other browsers should refresh the two values.</h3>
+    <script src="js/stats.js"></script>
+  </body>
+</html>
