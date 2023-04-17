@@ -101,6 +101,39 @@ sudo apt-get update && sudo apt-get upgrade -y
 5. View the logs with `sudo tail -f /var/log/apache2/access.log` or wherever your log file is located.
 6. You may need to run `sudo dpkg -i *.deb` in the `OpenSSL` folder again if you're not recieving any output for the RTT. The `sudo apt --fix-broken install` command from earlier might have replaced our version of `libssl` or `openssl` and you don't want that.
 
+# Running the Website
+##### (Nginx-Specific)
+We've created a simple configuration to expose Nginx's logging variables by injecting them into the webpage and performing logic via javascript. Ideally, this would be done on the server end via a server-side scripting language like PHP. Or even better, as an Nginx module that could block the connection before the contents of the request are returned to the client. Our simple webpage, however, is simply a POC that helps you verify that the server is running correctly and aids in testing various VPN types and seeing their respective RTT values.
+
+The webpage will appear green when a proxy is not detected:
+
+![Non-proxied connection](https://user-images.githubusercontent.com/58751387/232548322-8cdbd72b-c62b-4f02-83d5-2b54912cadf7.png)
+
+Or red when a proxy is detected:
+
+![Proxied-connection](https://user-images.githubusercontent.com/58751387/232549043-c56afbec-b1ac-41ba-9ce7-0ed709668493.png)
+
+**Note:** The algorithm used in this POC website needs to be tuned. Currently, the website is using simple logic that is functionaly equivalent to the code below:
+```c
+if ((TLS - 20ms) > TCP) {
+     proxy;
+} else {
+     not proxy;
+}
+```
+With more research on what real-world & in-the-wild proxies look like as far as variance, the above function can be tuned. 
+
+Future research will determine
+* if using a ratio of the TLS/TCP is a better route for proxy detection (i.e. block everything where the TLS RTT is >150% of the TCP RTT),
+* if incoporating the ping is absolutely necessary to detect some proxy types,
+* the best route to fingerprint clients on the server side across many connections using this metric, and
+* how many samples of TLS RTT & TCP RTT are necessary to create reliable averages.
+
+### Installation:
+* Place `index.html` and the `js` folder in the web root. Your webroot could be `/var/www/html/`
+* Edit your nginx website configuration to use the `sub_filter` and `subfilter_types` lines from `nginx_website.conf`
+* Reload nginx with `sudo systemctl restart nginx`
+
 # Overview of Our Changes
 ### OpenSSL
 We've modified the state machine of a TLS handshake to create two `OSSL_TIME`s variables at points in the handshake when a round trip should have taken place. This records two timestamps in the form of `ticks`. The difference in these timestamps (titled `handshake_rtt`) represents the round trip time for the TLS connection and is stored in the `SSL_Connection` object.
@@ -121,6 +154,9 @@ We've added the necessary changes to `/modules/ssl/ssl_engine_kernel.c` and `/mo
 
 ## To Do:
 - [X] Client-side TLS RTT calculation for TLS 1.2 connections
-- [ ] Client-side TLS RTT calculation for TLS 1.3 connections
+- [X] Client-side TLS RTT calculation for TLS 1.3 connections
 - [X] Refactor NGINX, Apache, and OpenSSL to use `uint64_t` return data type for `SSL_get_handshake_rtt()`
 - [X] Rename functions/variables/comments to be `handshake_rtt` instead of just `rtt` to be more clear on what this value really is
+- [ ] Complete Pull Request for OpenSSL
+- [ ] Complete Pull Request for Nginx
+- [ ] Complete Pull Request for Apache
