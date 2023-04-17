@@ -115,7 +115,7 @@ Or red when a proxy is detected:
 
 **Note:** The algorithm used in this POC website needs to be tuned. Currently, the website is using simple logic that is functionaly equivalent to the code below:
 ```c
-if ((TLS - 20ms) > TCP) {
+if ((TLS_RTT - 20ms) > TCP_RTT) {
      proxy;
 } else {
      not proxy;
