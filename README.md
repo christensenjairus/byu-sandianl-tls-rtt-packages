@@ -1,9 +1,9 @@
-# POC Debian Packages for Webserver TLS-Based Proxy Detection
-### BYU &amp; Sandia National Labs Capstone Project
-##### Ubuntu 22.10 was used to create these packages
+# Webserver TLS-Based Proxy Detection
+### POC Debian Packages and Test Website
+##### BYU &amp; Sandia National Labs Capstone Project
 Debian packages for OpenSSL, Nginx and Apache. ***These are all modified to calculate and provide the retrieval of TLS handshake round trip time and log it in webserver access logs.*** The OpenSSL changes could be used for other applications (e.g. SSH).
 
-*NOTE: This is a Proof of Concept and is not recommended for use in production environments. This functionality will be released soon built-in to OpenSSL, Nginx, and Apache (see our pending pull request). Until then, this is recommended for testing only.*
+*NOTE: This is a Proof of Concept and is not recommended for use in production environments. This functionality will be released soon built-in to OpenSSL, Nginx, and Apache (see our pending pull request). Until then, this is recommended for testing only. Ubuntu 22.10 was used to create these packages*
 
 This SSL/TLS Handshake Round Trip Time (RTT) is useful on both the client and server side to detect if a proxy is in use. 
 
