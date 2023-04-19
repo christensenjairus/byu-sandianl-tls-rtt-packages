@@ -125,7 +125,7 @@ With more research on what real-world & in-the-wild proxies look like as far as 
 
 Future research will determine
 * if using a ratio of the TLS/TCP is a better route for proxy detection (i.e. block everything where the TLS RTT is >150% of the TCP RTT),
-* if incoporating the ping is absolutely necessary to detect some proxy types,
+* if incorporating the ping is absolutely necessary to detect some proxy types,
 * the best route to fingerprint clients on the server side across many connections using this metric, and
 * how many samples of TLS RTT & TCP RTT are necessary to create reliable averages.
 
