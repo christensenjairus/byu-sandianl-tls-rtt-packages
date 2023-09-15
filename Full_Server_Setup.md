@@ -174,7 +174,7 @@ sudo systemctl stop apache2
 sudo make install
 
 # Move index.html to new webroot
-sudo cp /var/www/html/index.html /usr/local/apache2/htdocs
+sudo mv /var/www/html/index.html /usr/local/apache2/htdocs
 
 # Edit new config to allow https
 sudo vim /usr/local/apache2/conf/httpd.conf
