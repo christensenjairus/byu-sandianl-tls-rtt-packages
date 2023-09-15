@@ -170,7 +170,7 @@ cd ~/byu-sandianl-apache && ./buildconf
 compileapache
 
 # Install to System
-sudo systemctl stop apache2
+sudo systemctl disable --now apache2
 sudo make install
 
 # Move index.html to new webroot
