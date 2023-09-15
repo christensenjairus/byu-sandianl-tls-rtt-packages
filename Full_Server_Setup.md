@@ -178,6 +178,7 @@ sudo mv /var/www/html/index.html /usr/local/apache2/htdocs
 
 # Edit new config to allow https
 sudo vim /usr/local/apache2/conf/httpd.conf
+# Comment out 'Listen 80'
 # Add the following to the bottom of the file
 <IfModule ssl_module> 
         Listen 65534
