@@ -33,9 +33,9 @@ cd ~/ && git clone https://github.com/openssl/openssl
 
 cd ~/ && git clone https://github.com/christensenjairus/byu-sandianl-nginx
 
-git clone https://github.com/christensenjairus/byu-sandianl-apache.git
+cd ~/ && git clone https://github.com/christensenjairus/byu-sandianl-apache.git
 
-git clone https://github.com/christensenjairus/byu-sandianl-tls-rtt-packages.git
+cd ~/ && git clone https://github.com/christensenjairus/byu-sandianl-tls-rtt-packages.git
 ```
 
 # Compile Openssl
