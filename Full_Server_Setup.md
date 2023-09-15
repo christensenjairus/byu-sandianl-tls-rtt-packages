@@ -204,7 +204,7 @@ sudo killall apache2; sudo /usr/local/apache2/bin/apachectl restart
 
 # Verify that webpage now works again on port 443
 
-sudo tail -f /var/logs/apache2/logs/access.log
+sudo tail -f /usr/local/apache2/logs/access.log
 
 # These are the normal logs. Lets get the tls rtt in there now.
 
@@ -219,4 +219,4 @@ sudo killall apache2; sudo /usr/local/apache2/bin/apachectl restart
 
 # View logs
 
-sudo tail -f /var/logs/apache2/logs/access.log
+sudo tail -f /usr/local/apache2/logs/access.log
