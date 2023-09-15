@@ -141,7 +141,7 @@ sudo systemctl restart nginx
 ```
 
 # Setup Apache2
-Unlike NGINX, Apache will end up being installed very differently in the end. We'll use the apt version to get the certificates and virtualhost config right, then switch to the compiled version's folder (/usr/local/apache/). But don't delete the /etc/apache2, there are some files in there that are used still.
+Unlike NGINX, Apache will end up being installed very differently in the end. We'll use the apt version to get the certificates and virtualhost config right, then switch to the compiled version's folder (/usr/local/apache/). The apt-installed apache files in /etc/apache2 don't matter once the new instance is set up.
 ```bash
 sudo apt install apache2
 
