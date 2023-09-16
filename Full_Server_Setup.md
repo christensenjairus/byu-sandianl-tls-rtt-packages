@@ -116,7 +116,7 @@ sudo rm /var/www/html/nginx_website.conf
 
 sudo vim /etc/nginx/sites-enabled/default
 
-# Add the following lines to the main server{} block for the SSL port
+# Add the following lines to the main server{} block for the 65535 port
 
     sub_filter 'ssl_test' $ssl_rtt;
     sub_filter 'tcp_test' $tcpinfo_rtt;
