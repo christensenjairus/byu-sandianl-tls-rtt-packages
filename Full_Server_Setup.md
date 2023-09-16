@@ -204,7 +204,7 @@ DEFINE APACHE_LOG_DIR /usr/local/apache2/logs
 
 sudo killall apache2; sudo /usr/local/apache2/bin/apachectl start
 
-# Verify that webpage now works again on port 443
+# Verify that webpage now works again on port 65534
 
 sudo tail -f /usr/local/apache2/logs/access.log
 
