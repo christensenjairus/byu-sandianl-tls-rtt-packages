@@ -11,7 +11,7 @@ sudo apt update && sudo apt upgrade -y && sudo reboot
 ```bash
 alias c="clear"
 
-alias compileopenssl='cd /home/$USER/openssl && ./Configure && make'
+alias compileopenssl='cd /home/$USER/openssl && ./Configure && export LD_LIBRARY_PATH="/home/$USER/openssl/" && make'
 
 alias testopenssl="./apps/openssl s_server -key ../key.pem -cert ../cert.pem -accept 4443 -state"
 
