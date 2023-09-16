@@ -11,13 +11,14 @@ sudo apt update && sudo apt upgrade -y && sudo reboot
 ```bash
 alias c="clear"
 
-alias compileopenssl='cd /home/$USER/openssl && ./Configure -d --prefix=/usr/local/openssl-3.2 shared && export LD_LIBRARY_PATH="/home/$USER/openssl/" && make && sudo make install && openssl version'
+alias compileopenssl='cd /home/$USER/openssl && ./Configure && make'
 
 alias testopenssl="./apps/openssl s_server -key ../key.pem -cert ../cert.pem -accept 4443 -state"
 
+# Much of the below wasn't completely thought out, it just worked. I'm sure many of these options are default.
 alias compilenginx='cd /home/$USER/byu-sandianl-nginx/ && ./auto/configure --with-openssl=/home/$USER/openssl --prefix=/etc/nginx --with-cc-opt="-O3 -fPIE -fstack-protector-strong -Wformat -Werror=format-security" --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro" --with-openssl-opt="no-weak-ssl-ciphers no-ssl3 no-shared $ecflag -DOPENSSL_NO_HEARTBEATS -fstack-protector-strong" --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid--lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-file-aio --with-http_auth_request_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-pcre-jit --with-stream --with-stream_ssl_module --with-threads --without-http_empty_gif_module --without-http_geo_module --without-http_split_clients_module --without-http_ssi_module --without-mail_imap_module --without-mail_pop3_module --without-mail_smtp_module --with-debug && make'
 
-alias compileapache='cd /home/$USER/byu-sandianl-apache && sudo /sbin/ldconfig -v /usr/local/openssl-3.2/lib64 && LDFLAGS=-L/usr/local/openssl-3.2/lib64 ./configure --with-ssl=/usr/local/openssl-3.2/lib64 --enable-ssl-staticlib-deps --enable-mods-static=ssl && make && sudo /sbin/ldconfig -v /usr/local/openssl/lib64'
+alias compileapache='cd /home/$USER/byu-sandianl-apache && ./configure --with-ssl=/home/$USER/openssl --enable-mods=ssl && make'
 ```
 
 # Prepare System
@@ -200,7 +201,7 @@ DEFINE APACHE_LOG_DIR /usr/local/apache2/logs
 
 # Start new apache2 instance
 
-sudo killall apache2; sudo /usr/local/apache2/bin/apachectl restart
+sudo killall apache2; sudo /usr/local/apache2/bin/apachectl start
 
 # Verify that webpage now works again on port 443
 
@@ -215,7 +216,7 @@ LogFormat "%h %l %u %t %{SSL_PROTOCOL}x/%{SSL_CIPHER}x w/ %{SSL_RTT}x (tls) RTT 
 
 # Exit and restart apache2
 
-sudo killall apache2; sudo /usr/local/apache2/bin/apachectl restart
+sudo /usr/local/apache2/bin/apachectl restart
 
 # View logs
 
