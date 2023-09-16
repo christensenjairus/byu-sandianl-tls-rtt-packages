@@ -42,7 +42,7 @@ cd ~/ && git clone https://github.com/christensenjairus/byu-sandianl-tls-rtt-pac
 # Compile Openssl
 ```bash
 # Create testing cert
-openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes
+cd ~/ && openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes
 
 compileopenssl
 # Would NOT recommend installing this as the system version (i.e 'make install'). It'll break critical programs like ssh who rely on their own version.
