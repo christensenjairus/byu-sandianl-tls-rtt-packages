@@ -75,7 +75,7 @@ sudo certbot --nginx -d example.com
 # Test https website on port 443 using hostname
 
 sudo vim /etc/nginx/sites-enabled/default
-# Edit ports 443 to be 65535. Comment out server code for port 80.
+# Edit ports 443 to be 65535. Comment out server code for port 80. (there may be two different sections. We need port 80 for apache later!)
 
 sudo systemctl restart nginx
 
