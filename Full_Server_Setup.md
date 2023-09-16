@@ -45,6 +45,7 @@ cd ~/ && git clone https://github.com/christensenjairus/byu-sandianl-tls-rtt-pac
 openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes
 
 compileopenssl
+# Would NOT recommend installing this as the system version (i.e 'make install'). It'll break critical programs like ssh who rely on their own version.
 
 cd ~/openssl/ && testopenssl
 # Visit https://<ip>:4443 to test
@@ -159,7 +160,7 @@ sudo certbot --apache -d example.com
 ```bash
 cd ~/byu-sandianl-apache && svn co http://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr
 
-# Next blob is direction from here: https://askubuntu.com/questions/679228/error-while-building-apache
+# Next blob is a one-time need to get a few header files in the right place. Found here: https://askubuntu.com/questions/679228/error-while-building-apache
 # Also, version below will probably be wrong
 
 cd ~/ && apt-get download libexpat1-dev && ar x libexpat1-dev_2.4.7-1ubuntu0.2_amd64.deb && tar --use-compress-program=unzstd -xvf data.tar.zst && cd ~/usr && sudo find . -name expat*.h -exec cp {} /usr/include/ \; && sudo find . -name libexpat.so -exec cp {} /usr/lib/ \; && cd ~/ && rm -r ./usr ./data.tar.zst ./control.tar.zst ./debian-binary ./libexpat1-dev_2.4.7-1ubuntu0.2_amd64.deb
